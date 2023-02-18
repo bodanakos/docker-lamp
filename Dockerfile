@@ -1,11 +1,10 @@
-# Use an official Alpine Linux image as a parent image
 FROM alpine:3.17.2
 
-# Define a variable for the PHP version
+# Define args that came from Makefile
 ARG PHP_VERSION
 ARG WEB_SERVER
 
-# Install Apache, PHP and their dependencies
+# Install packages
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
     apk --update --no-cache add \
                            ${WEB_SERVER} \
@@ -22,16 +21,18 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repos
 #        ln -s /dev/stdout /var/log/nginx/access.log; \
 #        ln -s /dev/stderr /var/log/nginx/error.log; \
     fi
+
 # Set the working directory to /var/www/localhost/htdocs
 WORKDIR /var/www/localhost/htdocs
 
 # Copy the current directory contents into the container at /var/www/localhost/htdocs
-COPY . /var/www/localhost/htdocs
+COPY ./htdocs /var/www/localhost/htdocs
 
-# Expose port 80 for Apache
-#EXPOSE 80
+# Expose port 80 for Apache/Nginx
+EXPOSE 80
+
+# Copy start script
 COPY inc/start-${WEB_SERVER}.sh /opt/start.sh
 RUN chmod +x /opt/start.sh
-# Start Apache in the foreground
-#CMD ["httpd", "-DFOREGROUND"]
+
 CMD /opt/start.sh

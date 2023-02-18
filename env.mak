@@ -1,0 +1,2 @@
+PHP_VERSION = 8.1
+WEB_SERVER = nginx

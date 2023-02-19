@@ -1,2 +1,2 @@
-PHP_VERSION = 8.1
+PHP_VERSION = 8.2
 WEB_SERVER = nginx

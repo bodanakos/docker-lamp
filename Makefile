@@ -9,11 +9,18 @@ PHP_VERSION ?= 8.2
 WEB_SERVER ?= apache2
 IMAGE_NAME ?= $(WEB_SERVER)_php-$(PHP_VERSION)
 # Build the Docker image with the PHP version specified in the environment
+#           --build-arg PHP_VERSION=$(subst .,,$(PHP_VERSION)) \
+
 build:
 	docker build \
-          --build-arg PHP_VERSION=$(subst .,,$(PHP_VERSION)) \
+          --build-arg PHP_VERSION=$(PHP_VERSION) \
           --build-arg WEB_SERVER=$(WEB_SERVER)  \
-          -t $(IMAGE_NAME) .
+          -t $(IMAGE_NAME) dockerfiles/web/$(WEB_SERVER)/
+run:
+	docker run \
+          -d \
+          -p 80:80 \
+          -v $(shell pwd)/htdocs:/var/www/html/htdocs $(IMAGE_NAME)
 
 # Clean up the Docker image
 clean:

@@ -12,13 +12,11 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repos
                            php${PHP_VERSION//./}-mysqli \
                            php${PHP_VERSION//./}-pdo_mysql && \
     mkdir -p /var/www/html/htdocs && \
-    sed -i 's#/var/www/localhost#/var/www/html#g' /etc/apache2/httpd.conf && \
-    if [ "${WEB_SERVER}" = "apache2" ]; then \
-        apk add php${PHP_VERSION//./}-${WEB_SERVER}; \
-        chown apache:apache /var/www/html/; \
-        sed -i 's/#LoadModule\ rewrite_module/LoadModule\ rewrite_module/g' /etc/apache2/httpd.conf;  \
-    fi; \
     if [ "${WEB_SERVER}" = "nginx" ]; then \
+        sed -i '/^\s*#/d' /etc/nginx/http.d/default.conf; \
+        sed -i 's#listen \[::\]:80 default_server;#listen \[::\]:80 default_server;\n\troot /var/www/html/htdocs;#' /etc/nginx/http.d/default.conf; \
+        sed -i '/location \/ {/a \\t\ttry_files $uri $uri\/ =404;' /etc/nginx/http.d/default.conf; \
+        sed -i '/location \/ {/,/}/s/^\s*return 404;//' /etc/nginx/http.d/default.conf; \
         sed -i 's/user nginx;/user root;/' /etc/nginx/nginx.conf; \
 #        sed -i 's/worker_processes  auto;/worker_processes  1;/' /etc/nginx/nginx.conf; \
 #        sed -i 's#root /var/www/html;#root /var/www/html;\n\tindex index.php;#' /etc/nginx/http.d/default.conf; \

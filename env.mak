@@ -1,2 +1,2 @@
 PHP_VERSION = 8.2
-WEB_SERVER = nginx
+WEB_SERVER = apache2

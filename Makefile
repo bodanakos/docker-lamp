@@ -20,7 +20,7 @@ run:
 	docker run \
           -d \
           -p 80:80 \
-          -v $(shell pwd)sources/htdocs:/var/www/html/htdocs $(IMAGE_NAME)
+          -v $(shell pwd)/sources/htdocs:/var/www/html/htdocs $(IMAGE_NAME)
 
 # Clean up the Docker image
 clean:

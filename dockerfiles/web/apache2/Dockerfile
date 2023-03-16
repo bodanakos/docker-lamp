@@ -26,7 +26,7 @@ WORKDIR /var/www/html
 EXPOSE 80
 
 # Copy start script
-COPY inc/start-${WEB_SERVER}.sh /opt/start.sh
+COPY inc/opt/start-${WEB_SERVER}.sh /opt/start.sh
 RUN chmod +x /opt/start.sh
 
 CMD /opt/start.sh

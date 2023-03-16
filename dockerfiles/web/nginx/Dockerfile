@@ -11,12 +11,15 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repos
                            php${PHP_VERSION//./}-gd \
                            php${PHP_VERSION//./}-mysqli \
                            php${PHP_VERSION//./}-pdo_mysql && \
-    mkdir -p /var/www/html/htdocs && \
-    if [ "${WEB_SERVER}" = "nginx" ]; then \
-        sed -i '/^\s*#/d' /etc/nginx/http.d/default.conf; \
-        sed -i 's#listen \[::\]:80 default_server;#listen \[::\]:80 default_server;\n\troot /var/www/html/htdocs;#' /etc/nginx/http.d/default.conf; \
-        sed -i '/location \/ {/a \\t\ttry_files $uri $uri\/ =404;' /etc/nginx/http.d/default.conf; \
-        sed -i '/location \/ {/,/}/s/^\s*return 404;//' /etc/nginx/http.d/default.conf; \
+    mkdir -p /var/www/html/htdocs
+
+COPY inc/etc/nginx/http.d/default.conf /etc/nginx/http.d/default.conf
+
+RUN  if [ "${WEB_SERVER}" = "nginx" ]; then \
+#        sed -i '/^\s*#/d' /etc/nginx/http.d/default.conf; \
+#        sed -i 's#listen \[::\]:80 default_server;#listen \[::\]:80 default_server;\n\troot /var/www/html/htdocs;#' /etc/nginx/http.d/default.conf; \
+#        sed -i '/location \/ {/a \\t\ttry_files $uri $uri\/ =404;' /etc/nginx/http.d/default.conf; \
+#        sed -i '/location \/ {/,/}/s/^\s*return 404;//' /etc/nginx/http.d/default.conf; \
         sed -i 's/user nginx;/user root;/' /etc/nginx/nginx.conf; \
 #        sed -i 's/worker_processes  auto;/worker_processes  1;/' /etc/nginx/nginx.conf; \
 #        sed -i 's#root /var/www/html;#root /var/www/html;\n\tindex index.php;#' /etc/nginx/http.d/default.conf; \
@@ -41,7 +44,7 @@ WORKDIR /var/www/html
 EXPOSE 80
 
 # Copy start script
-COPY inc/start-${WEB_SERVER}.sh /opt/start.sh
+COPY inc/opt/start-${WEB_SERVER}.sh /opt/start.sh
 RUN chmod +x /opt/start.sh
 
 CMD /opt/start.sh

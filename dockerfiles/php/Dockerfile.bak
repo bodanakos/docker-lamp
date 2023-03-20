@@ -1,0 +1,19 @@
+FROM alpine:3.17.2
+ARG PHP_VERSION
+RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \ 
+    apk --update --no-cache add \
+                           php${PHP_VERSION//./}-fpm \
+                           php${PHP_VERSION//./}-gd \
+                           php${PHP_VERSION//./}-mysqli \
+                           php${PHP_VERSION//./}-pdo_mysql 
+
+COPY inc/etc/php/php-fpm.d/www.conf /tmp
+
+RUN mv /tmp/www.conf /etc/php${PHP_VERSION//./}/php-fpm.d/ && \
+    mv /usr/sbin/php-fpm${PHP_VERSION//./} /usr/sbin/php-fpm
+#RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories && \
+#	apk add -U shadow && \
+#	usermod -u 1000 www-data
+
+EXPOSE 9000
+ENTRYPOINT ["/bin/sh", "-c", "/usr/sbin/php-fpm -F > /proc/1/fd/1 2>&1"]

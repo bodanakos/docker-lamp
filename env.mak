@@ -1,2 +1,4 @@
 PHP_VERSION = 8.2
-WEB_SERVER = apache2
+WEB_SERVER = nginx
+DB_BACKEND = mysql
+DB_VERSION = 8.0
